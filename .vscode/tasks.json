@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build raylib program",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "${workspaceFolder}/main.c",
+                "${workspaceFolder}/animation.c",
+                "${workspaceFolder}/screen_setup.c",
+                "-I${env:HOME}/non_package_sw/raylib/src",
+                "-L${env:HOME}/non_package_sw/raylib/build/raylib",
+                "-lraylib",
+                "-lm",
+                "-lX11",
+                "-o",
+                "${workspaceFolder}/mygame"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}

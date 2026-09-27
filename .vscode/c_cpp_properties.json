@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "name": "linux-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "linux-gcc-x64",
+      "compilerArgs": [
+        "-I\"$HOME/non_package_sw/raylib/src\"",
+        "-L\"$HOME/non_package_sw/raylib/build/raylib\"",
+        "-lraylib",
+        "-lm",
+        "-lX11"
+      ]
+    }
+  ],
+  "version": 4
+}
