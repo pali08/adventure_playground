@@ -4,6 +4,23 @@
 #include <stdlib.h>
 
 
+#include "screen_setup.h"
+#include "raylib.h"
+
+void InitializeWindow(int screenWidth, int screenHeight, int gameWidth, int gameHeight) {
+  (void)gameWidth;
+  (void)gameHeight;
+  SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_VSYNC_HINT);
+  InitWindow(screenWidth, screenHeight, "Multi-Animation Demo");
+  SetWindowMinSize(320, 240);
+}
+
+RenderTexture2D InitializeRenderTexture(int width, int height) {
+  RenderTexture2D target = LoadRenderTexture(width, height);
+  SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
+  return target;
+}
+
 unsigned short *get_screen_size(void)
 {
     // Fix: Size increased to 3 to safely hold width, height, and the terminator (-1)

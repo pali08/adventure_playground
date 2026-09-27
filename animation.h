@@ -23,5 +23,7 @@ typedef struct {
 
 Animation LoadAnimation(const char *folder, float fps, Vector2 position);
 void UnloadAnimation(Animation *anim);
+int LoadAnimations(Animation *animations);
+void UpdateAnimations(float *animTimers, int *animIndices, int animCount, const Animation *anims);
 
 #endif // ANIMATION_H

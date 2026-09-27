@@ -75,3 +75,25 @@ void UnloadAnimation(Animation *anim) {
   anim->active = false;
   anim->frames.animFrameCount = 0;
 }
+
+int LoadAnimations(Animation *animations) {
+  // Example: load 2 animations manually for now (you can populate from a config)
+  animations[0] = LoadAnimation("animation", 0.5f, (Vector2){GAME_WIDTH * 0.25f, GAME_HEIGHT * 0.25f});
+  animations[1] = LoadAnimation("animation2", 2.0f, (Vector2){GAME_WIDTH * 0.6f, GAME_HEIGHT * 0.5f});
+  int animCount = 2;
+  return animCount;
+}
+
+void UpdateAnimations(float *animTimers, int *animIndices, int animCount,
+                      const Animation *anims) {
+  for (int i = 0; i < animCount; i++) {
+    const Animation *anim = &anims[i];
+    if (!anim->active || anim->fps <= 0.0f) continue;
+
+    animTimers[i] += GetFrameTime();
+    if (animTimers[i] >= 1.0f / anim->fps) {
+      animTimers[i] -= 1.0f / anim->fps;
+      animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
+    }
+  }
+}
