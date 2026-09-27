@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define MAX_ANIMATIONS 10
+
 
 Animation animations[MAX_ANIMATIONS];
 int animCount = 0;
@@ -31,11 +31,6 @@ void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
                      int gameHeight);
 void Cleanup();
 
-// --- Global config ---
-const int GAME_WIDTH = 1920;
-const int GAME_HEIGHT = 1080;
-const int MAX_ANIM_FRAMES = 10; // for colors stripes
-
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
@@ -48,8 +43,6 @@ int main(void) {
   RenderTexture2D target = InitializeRenderTexture(GAME_WIDTH, GAME_HEIGHT);
 
   LoadAnimations(); // Load multiple animations
-
-  Color colors[MAX_ANIM_FRAMES];
 
   float animTimers[MAX_ANIMATIONS] = {0};
   int animIndices[MAX_ANIMATIONS] = {0};
@@ -151,12 +144,6 @@ void DrawAnimationsToRenderTexture(RenderTexture2D target,
   }
 
   // Debug text
-  DrawText("If executed inside a window,\nyou can resize the window,\nand "
-           "see the screen scaling!",
-           10, 25, 20, WHITE);
-  DrawText(TextFormat("Default Mouse: [%i , %i]", (int)GetMousePosition().x,
-                      (int)GetMousePosition().y),
-           350, 25, 20, GREEN);
   DrawText(TextFormat("Virtual Mouse: [%i , %i]", (int)virtualMouse.x,
                       (int)virtualMouse.y),
            350, 55, 20, YELLOW);
