@@ -4,12 +4,20 @@
 void DrawAnimationsToRenderTexture(RenderTexture2D target,
                                    const Animation *anims, int animCount,
                                    int *animIndices, float scale,
-                                   Vector2 virtualMouse) {
+                                   Vector2 virtualMouse, Texture2D background) {
   (void)virtualMouse;
   (void)scale;
 
   BeginTextureMode(target);
   ClearBackground(DARKGRAY);
+
+  // Draw background filling the render texture size
+  // DrawTexturePro(background,
+  //                (Rectangle){0, 0, (float)background.width, (float)-background.height},
+  //                (Rectangle){0, 0, (float)target.texture.width, (float)target.texture.height},
+  //                (Vector2){0, 0}, 0.0f, WHITE);
+  DrawTexture(background, 0, 0, WHITE);
+
 
   for (int i = 0; i < animCount; i++) {
     const Animation *anim = &anims[i];

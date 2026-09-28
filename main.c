@@ -14,6 +14,7 @@ int main(void) {
 
   Animation animations[MAX_ANIMATIONS];
   int animCount = LoadAnimations(animations);
+  Texture2D background = LoadTexture("nadr.png");
 
   float animTimers[MAX_ANIMATIONS] = {0};
   int animIndices[MAX_ANIMATIONS] = {0};
@@ -25,7 +26,7 @@ int main(void) {
     Vector2 virtualMouse = CalculateVirtualMouse(scale);
 
     UpdateAnimations(animTimers, animIndices, animCount, animations);
-    DrawAnimationsToRenderTexture(target, animations, animCount, animIndices, scale, virtualMouse);
+    DrawAnimationsToRenderTexture(target, animations, animCount, animIndices, scale, virtualMouse, background);
     HandleClickDetection(animations, animCount, animIndices, virtualMouse);
     PresentToScreen(target, scale, GAME_WIDTH, GAME_HEIGHT);
   }
