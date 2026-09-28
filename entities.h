@@ -1,0 +1,48 @@
+#ifndef ENTITIES_H
+#define ENTITIES_H
+
+#include "animation.h"
+#include "constants.h"
+
+// Common base for all animated entities
+typedef struct {
+  Animation anim;  // <-- Reuse Animation struct
+} Entity;
+
+// Item-specific data (extends Animation)
+typedef struct {
+  Animation anim;  // base animation
+  bool return_to_inventory_after_combine;
+  bool visible;
+  char name[MAX_NAME_LEN];               // e.g., "rusty key"
+  char description[MAX_DESC_LEN];        // e.g., "A dusty iron key, covered in rust."
+  char combinable_with[MAX_NAME_LEN];    // item name it can combine with
+  char resulting_item_name[MAX_NAME_LEN];
+  char type[MAX_TYPE_LEN];               // e.g., "key", "tool", "keyitem"
+  char take_message[MAX_MSG_LEN];        // e.g., "You picked up the key."
+  char combine_message[MAX_MSG_LEN];     // e.g., "You combine the key with the door..."
+  char make_some_other_item_in_room_takeable[MAX_NAME_LEN]; // optional
+  char uncombinable_with[MAX_NAME_LEN];
+  char uncombinable_message[MAX_MSG_LEN];
+  char is_modified_by[MAX_NAME_LEN];     // what modifies this item
+  char modifies_item[MAX_NAME_LEN];      // what item this modifies
+  char modification_resulting_item_name[MAX_NAME_LEN];
+  char modification_message[MAX_MSG_LEN];
+  char take_sound[MAX_PATH_LEN];         // e.g., "assets/sfx/take_key.wav"
+  char combine_sound[MAX_PATH_LEN];
+  char modify_sound[MAX_PATH_LEN];
+  char search_sound[MAX_PATH_LEN];
+} Item;
+
+// Person-specific data (extends Animation)
+typedef struct {
+  Animation anim;  // base animation
+  char name[MAX_NAME_LEN];
+  char description[MAX_DESC_LEN];
+  char combinable_with[MAX_NAME_LEN];   // e.g., "empty bottle"
+  // Dialogue can be a struct later; for now, maybe index into a dialogue table
+  // or store ID. Replace with real `Dialogue` later as needed.
+  char dialogue_id[MAX_NAME_LEN];       // e.g., "guard_intro_01"
+} Person;
+
+#endif // ENTITIES_H
