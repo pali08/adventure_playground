@@ -18,4 +18,7 @@
 #define MAX_MSG_LEN 50
 #define MAX_TYPE_LEN 15
 
+#define MAX_ITEMS 20
+#define MAX_PERSONS 20
+
 #endif

@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "entities.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
@@ -7,7 +8,8 @@ static AnimationFrameSet LoadAnimationFrameSet(const char *folder) {
   AnimationFrameSet ad = {0};
 
   DIR *dir = opendir(folder);
-  if (!dir) return ad;
+  if (!dir)
+    return ad;
 
   int count = 0;
   struct dirent *entry;
@@ -67,7 +69,8 @@ Animation LoadAnimation(const char *folder, float fps, Vector2 position) {
 }
 
 void UnloadAnimation(Animation *anim) {
-  if (!anim || !anim->active) return;
+  if (!anim || !anim->active)
+    return;
   for (int i = 0; i < anim->frames.animFrameCount; i++) {
     UnloadTexture(anim->frames.animTextures[i]);
     UnloadImage(anim->frames.animImages[i]);
@@ -76,19 +79,20 @@ void UnloadAnimation(Animation *anim) {
   anim->frames.animFrameCount = 0;
 }
 
-int LoadAnimations(Animation *animations) {
-  // Example: load 2 animations manually for now (you can populate from a config)
-  animations[0] = LoadAnimation("animation", 0.5f, (Vector2){GAME_WIDTH * 0.25f, GAME_HEIGHT * 0.25f});
-  animations[1] = LoadAnimation("animation2", 2.0f, (Vector2){GAME_WIDTH * 0.6f, GAME_HEIGHT * 0.5f});
-  int animCount = 2;
-  return animCount;
-}
+// int LoadAnimations(Animation *animations) {
+//   // Example: load 2 animations manually for now (you can populate from a
+//   config) animations[0] = LoadAnimation("animation", 0.5f,
+//   (Vector2){GAME_WIDTH * 0.25f, GAME_HEIGHT * 0.25f}); animations[1] =
+//   LoadAnimation("animation2", 2.0f, (Vector2){GAME_WIDTH * 0.6f, GAME_HEIGHT
+//   * 0.5f}); int animCount = 2; return animCount;
+// }
 
 void UpdateAnimations(float *animTimers, int *animIndices, int animCount,
                       const Animation *anims) {
   for (int i = 0; i < animCount; i++) {
     const Animation *anim = &anims[i];
-    if (!anim->active || anim->fps <= 0.0f) continue;
+    if (!anim->active || anim->fps <= 0.0f)
+      continue;
 
     animTimers[i] += GetFrameTime();
     if (animTimers[i] >= 1.0f / anim->fps) {
