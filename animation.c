@@ -1,5 +1,4 @@
 #include "animation.h"
-#include "entities.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>

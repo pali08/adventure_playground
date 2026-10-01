@@ -1,10 +1,10 @@
 #include "animation.h"
 #include "constants.h"
-#include "screen_setup.h"
-#include "input.h"
-#include "rendering.h"
-#include "raylib.h"
 #include "entities.h"
+#include "input.h"
+#include "raylib.h"
+#include "rendering.h"
+#include "screen_setup.h"
 
 int main(void) {
   unsigned short *size = get_screen_size();
@@ -28,23 +28,38 @@ int main(void) {
   int animItemIndices[MAX_ITEMS] = {0};
   int animPersonIndices[MAX_PERSONS] = {0};
 
-
   SetTargetFPS(60);
+
+  // ... earlier initialization code ...
 
   while (!WindowShouldClose()) {
     float scale = CalculateScaleFactor();
     Vector2 virtualMouse = CalculateVirtualMouse(scale);
 
-    // UpdateAnimations(animTimers, animIndices, animCount, animations);
     UpdateItems(animItemTimers, animItemIndices, animItemCount, items);
-    UpdatePersons(animPersonTimers, animPersonIndices, animPersonCount, persons);
-    DrawAnimationsToRenderTexture(target, animations, animCount, animIndices, scale, virtualMouse, background);
-    HandleClickDetection(animations, animCount, animIndices, virtualMouse);
+    UpdatePersons(animPersonTimers, animPersonIndices, animPersonCount,
+                  persons);
+
+    BeginTextureMode(target);
+    ClearBackground(DARKGRAY);
+    DrawTexture(background, 0, 0, WHITE);
+    EndTextureMode();
+
+    DrawItemsToRenderTexture(target, items, animItemCount, animItemIndices);
+    DrawPersonsToRenderTexture(target, persons, animPersonCount,
+                               animPersonIndices);
+
+    HandleItemClicks(items, animItemCount, animItemIndices, virtualMouse);
+    HandlePersonClicks(persons, animPersonCount, animPersonIndices,
+                       virtualMouse);
+
     PresentToScreen(target, scale, GAME_WIDTH, GAME_HEIGHT);
   }
 
-  for (int i = 0; i < animPersonCount; i++) UnloadAnimation(&persons[i].anim);
-  for (int i = 0; i < animItemCount; i++) UnloadAnimation(&items[i].anim);
+  for (int i = 0; i < animPersonCount; i++)
+    UnloadAnimation(&persons[i].anim);
+  for (int i = 0; i < animItemCount; i++)
+    UnloadAnimation(&items[i].anim);
   UnloadRenderTexture(target);
   CloseWindow();
   return 0;

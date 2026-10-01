@@ -2,16 +2,26 @@
 #define RENDERING_H
 
 #include "animation.h"
+#include "entities.h"
 #include "raylib.h"
 
-void DrawAnimationsToRenderTexture(RenderTexture2D target,
-                                   const Animation *anims, int animCount,
-                                   int *animIndices, float scale,
-                                   Vector2 virtualMouse, Texture2D background);
+// Draw
+void DrawItemsToRenderTexture(RenderTexture2D target,
+                              const Item *items, int itemCount,
+                              const int *itemIndices);
 
-void HandleClickDetection(const Animation *anims, int animCount,
-                          int *animIndices, Vector2 virtualMouse);
+void DrawPersonsToRenderTexture(RenderTexture2D target,
+                                const Person *persons, int personCount,
+                                const int *personIndices);
 
+// Click handling
+void HandleItemClicks(const Item *items, int itemCount,
+                      const int *itemIndices, Vector2 virtualMouse);
+
+void HandlePersonClicks(const Person *persons, int personCount,
+                        const int *personIndices, Vector2 virtualMouse);
+
+// Present
 void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
                      int gameHeight);
 

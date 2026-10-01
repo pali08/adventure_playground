@@ -1,27 +1,17 @@
 #include "rendering.h"
 #include <stdint.h>
 
-void DrawAnimationsToRenderTexture(RenderTexture2D target,
-                                   const Animation *anims, int animCount,
-                                   int *animIndices, float scale,
-                                   Vector2 virtualMouse, Texture2D background) {
-  (void)virtualMouse;
-  (void)scale;
+// ... existing includes ...
 
+void DrawItemsToRenderTexture(RenderTexture2D target,
+                              const Item *items, int itemCount,
+                              const int *itemIndices) {
   BeginTextureMode(target);
-  ClearBackground(DARKGRAY);
-
-  // Draw background filling the render texture size
-  // DrawTexturePro(background,
-  //                (Rectangle){0, 0, (float)background.width, (float)-background.height},
-  //                (Rectangle){0, 0, (float)target.texture.width, (float)target.texture.height},
-  //                (Vector2){0, 0}, 0.0f, WHITE);
-  DrawTexture(background, 0, 0, WHITE);
 
 
-  for (int i = 0; i < animCount; i++) {
-    const Animation *anim = &anims[i];
-    int idx = animIndices[i];
+  for (int i = 0; i < itemCount; i++) {
+    const Animation *anim = &items[i].anim;
+    int idx = itemIndices[i];
 
     if (!anim->active || anim->frames.animFrameCount == 0 || idx >= anim->frames.animFrameCount) {
       continue;
@@ -31,22 +21,40 @@ void DrawAnimationsToRenderTexture(RenderTexture2D target,
                 (int)anim->position.y, WHITE);
   }
 
-  DrawText(TextFormat("Virtual Mouse: [%i , %i]", (int)virtualMouse.x,
-                      (int)virtualMouse.y),
-           350, 55, 20, YELLOW);
+  EndTextureMode();
+}
+
+void DrawPersonsToRenderTexture(RenderTexture2D target,
+                                const Person *persons, int personCount,
+                                const int *personIndices) {
+
+  // NOTE: This *overwrites* background. If you want layering, draw items first.
+  BeginTextureMode(target);
+
+  for (int i = 0; i < personCount; i++) {
+    const Animation *anim = &persons[i].anim;
+    int idx = personIndices[i];
+
+    if (!anim->active || anim->frames.animFrameCount == 0 || idx >= anim->frames.animFrameCount) {
+      continue;
+    }
+
+    DrawTexture(anim->frames.animTextures[idx], (int)anim->position.x,
+                (int)anim->position.y, WHITE);
+  }
 
   EndTextureMode();
 }
 
-void HandleClickDetection(const Animation *anims, int animCount,
-                          int *animIndices, Vector2 virtualMouse) {
+void HandleItemClicks(const Item *items, int itemCount,
+                      const int *itemIndices, Vector2 virtualMouse) {
   if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
 
-  for (int i = 0; i < animCount; i++) {
-    const Animation *anim = &anims[i];
+  for (int i = 0; i < itemCount; i++) {
+    const Animation *anim = &items[i].anim;
     if (!anim->active) continue;
 
-    int idx = animIndices[i];
+    int idx = itemIndices[i];
     if (idx < 0 || idx >= anim->frames.animFrameCount) continue;
 
     Vector2 size = anim->frames.animSizes[idx];
@@ -61,12 +69,44 @@ void HandleClickDetection(const Animation *anims, int animCount,
         uint8_t *pixels = (uint8_t *)img.data;
         uint8_t alpha = pixels[(py * img.width + px) * 4 + 3];
         if (alpha > 128) {
-          TraceLog(LOG_INFO, "click on animation %d", i);
+          TraceLog(LOG_INFO, "click on item %d: %s", i, items[i].name);
         }
       }
     }
   }
 }
+
+void HandlePersonClicks(const Person *persons, int personCount,
+                        const int *personIndices, Vector2 virtualMouse) {
+  if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) return;
+
+  for (int i = 0; i < personCount; i++) {
+    const Animation *anim = &persons[i].anim;
+    if (!anim->active) continue;
+
+    int idx = personIndices[i];
+    if (idx < 0 || idx >= anim->frames.animFrameCount) continue;
+
+    Vector2 size = anim->frames.animSizes[idx];
+    if (virtualMouse.x >= anim->position.x &&
+        virtualMouse.x < anim->position.x + size.x &&
+        virtualMouse.y >= anim->position.y &&
+        virtualMouse.y < anim->position.y + size.y) {
+      int px = (int)(virtualMouse.x - anim->position.x);
+      int py = (int)(virtualMouse.y - anim->position.y);
+      Image img = anim->frames.animImages[idx];
+      if (px >= 0 && px < img.width && py >= 0 && py < img.height) {
+        uint8_t *pixels = (uint8_t *)img.data;
+        uint8_t alpha = pixels[(py * img.width + px) * 4 + 3];
+        if (alpha > 128) {
+          TraceLog(LOG_INFO, "click on person %d: %s", i, persons[i].name);
+        }
+      }
+    }
+  }
+}
+
+// ... rest unchanged ...
 
 void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
                      int gameHeight) {
