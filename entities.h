@@ -3,6 +3,7 @@
 
 #include "animation.h"
 #include "constants.h"
+#include "raylib.h"
 
 // Common base for all animated entities
 typedef struct {
@@ -45,11 +46,24 @@ typedef struct {
   char dialogue_id[MAX_NAME_LEN]; // e.g., "guard_intro_01"
 } Person;
 
+typedef struct {
+  Person persons[MAX_PERSONS];
+  int personCount;
+
+  Item items[MAX_ITEMS];
+  int itemCount;
+
+  char background[16];            // max 15 chars + null terminator
+  char sound[16];                 // max 15 chars + null terminator
+  char firstVisitText[301];       // max 300 chars + null terminator
+} Room;
+
 int LoadItems(Item *items, int maxCount);
 int LoadPersons(Person *persons, int maxCount);
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items);
 void UpdatePersons(float *animTimers, int *animIndices, int animCount,
                    const Person *persons);
-
+void LoadRoom(const char *jsonFile, Room *room, Item *items, int maxItems,
+              Person *persons, int maxPersons);
 #endif // ENTITIES_H

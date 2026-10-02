@@ -1,0 +1,314 @@
+{
+  "items": {
+    "dead_body": {
+      "description": "Mrtvola - značně rozsekaná",
+      "coords": [
+        0.440625,
+        0.80259222333001
+      ],
+      "resize_factor": 1,
+      "visible": true,
+      "combinable_with": "",
+      "resulting_item_name": "",
+      "type": "searchable:navstevnicka_karticka.png",
+      "take_message": "Prohledal jsi tělo zemřelého a našel jsi kartičku s obrázkem nějakého hradu a nápisem návštěva. Týpek měl u sebe taky lístek \"se zprávou: \"nezapomeň vyvenčit Freddieho\" - to bude asi pejsek.",
+      "combine_message": "",
+      "make_some_other_item_in_room_takeable": null,
+      "uncombinable_with": "",
+      "uncombinable_message": "",
+      "is_modified_by": "",
+      "modifies_item": "",
+      "modification_resulting_item_name": "",
+      "modification_message": "",
+      "return_to_inventory_after_combine": "",
+      "take_sound": "",
+      "combine_sound": "",
+      "modify_sound": "",
+      "search_sound": "search_body.wav"
+    },
+    "door_to_lekarna": {
+      "description": "Vstup do lékarny",
+      "coords": [
+        0.72421875,
+        0.5358923230309073
+      ],
+      "resize_factor": 1,
+      "visible": true,
+      "combinable_with": "",
+      "resulting_item_name": "",
+      "type": "door to lekarna",
+      "take_message": "",
+      "combine_message": "",
+      "make_some_other_item_in_room_takeable": null,
+      "uncombinable_with": "",
+      "uncombinable_message": "",
+      "is_modified_by": "",
+      "modifies_item": "",
+      "modification_resulting_item_name": "",
+      "modification_message": "",
+      "return_to_inventory_after_combine": "",
+      "take_sound": "",
+      "combine_sound": "",
+      "modify_sound": "",
+      "search_sound": ""
+    },
+    "map": {
+      "description": "Mapa",
+      "coords": [
+        0.9596354166666666,
+        0.9461615154536391
+      ],
+      "resize_factor": 1,
+      "visible": true,
+      "combinable_with": "",
+      "resulting_item_name": "",
+      "type": "door to map",
+      "take_message": "",
+      "combine_message": "",
+      "make_some_other_item_in_room_takeable": null,
+      "uncombinable_with": "",
+      "uncombinable_message": "",
+      "is_modified_by": "",
+      "modifies_item": "",
+      "modification_resulting_item_name": "",
+      "modification_message": "",
+      "return_to_inventory_after_combine": "",
+      "take_sound": "",
+      "combine_sound": "",
+      "modify_sound": "",
+      "search_sound": ""
+    },
+    "trash_bin": {
+      "description": "Prohledat koš",
+      "coords": [
+        0.8658854166666667,
+        0.6096709870388833
+      ],
+      "resize_factor": 1,
+      "visible": true,
+      "combinable_with": "",
+      "resulting_item_name": "",
+      "type": "searchable:zemla.png:zemla2.png:cocaine.png",
+      "take_message": "Prohledal jsi koš a našel jsi nějakou salámovou housku a, div se světe, hrudu kokaínu - asi to tam někdo zahodil při osobní kontrole.",
+      "combine_message": "",
+      "make_some_other_item_in_room_takeable": null,
+      "uncombinable_with": "",
+      "uncombinable_message": "",
+      "is_modified_by": "",
+      "modifies_item": "",
+      "modification_resulting_item_name": "",
+      "modification_message": "",
+      "return_to_inventory_after_combine": "",
+      "take_sound": "",
+      "combine_sound": "",
+      "modify_sound": "",
+      "search_sound": ""
+    },
+    "koste": {
+      "description": "Koště",
+      "coords": [
+        0.8197916666666666,
+        0.5982053838484546
+      ],
+      "resize_factor": 1,
+      "visible": true,
+      "combinable_with": "",
+      "resulting_item_name": "",
+      "type": "takeable",
+      "take_message": "",
+      "combine_message": "",
+      "make_some_other_item_in_room_takeable": null,
+      "uncombinable_with": "",
+      "uncombinable_message": "",
+      "is_modified_by": "",
+      "modifies_item": "",
+      "modification_resulting_item_name": "",
+      "modification_message": "",
+      "return_to_inventory_after_combine": "",
+      "take_sound": "",
+      "combine_sound": "",
+      "modify_sound": "",
+      "search_sound": ""
+    },
+    "dratenka": {
+      "description": "Velký drátěný kartáč",
+      "coords": [
+        0.8721354166666667,
+        0.7761714855433698
+      ],
+      "resize_factor": 1.0,
+      "visible": true,
+      "combinable_with": "",
+      "resulting_item_name": "",
+      "type": "takeable",
+      "take_message": "",
+      "combine_message": "",
+      "make_some_other_item_in_room_takeable": "",
+      "uncombinable_with": "",
+      "uncombinable_message": "",
+      "is_modified_by": "",
+      "modifies_item": "",
+      "modification_resulting_item_name": "",
+      "modification_message": "",
+      "return_to_inventory_after_combine": "",
+      "take_sound": "",
+      "combine_sound": "",
+      "modify_sound": "",
+      "search_sound": ""
+    }
+  },
+  "persons": {
+    "homeless": {
+      "description": "Pokecat s bezďákem",
+      "coords": [
+        0.23255208333333333,
+        0.6555333998005982
+      ],
+      "visible": true,
+      "combinable_with": "",
+      "dialogue": {
+        "intro": {
+          "person_line": "Dobrý den pane, nemáte něco k jídlu?",
+          "answers": {
+            "1": {
+              "answer": "Nemám, sorry",
+              "next": "nemam",
+              "action": null,
+              "visible": true
+            },
+            "2": {
+              "answer": "Jo, tady máš housku. Nevíš náhodou, kde je tento hrad?",
+              "next": "houska",
+              "action": null,
+              "visible": true
+            },
+            "3": {
+              "answer": "Hele, už jseš najezenej, nechceš si něco přivydělat? Pomůžu ti ujekradnout pračku, kterou pak můžeš prodat na bazoši.",
+              "next": "privydelek",
+              "action": null,
+              "visible": true,
+              "visible_if_item_exists_other_room": {
+                "room": "chodba_bytu_obeti_during",
+                "item": "skrin_pojistky_open_switch_down.png"
+              }
+            }
+          }
+        },
+        "nemam": {
+          "person_line": "Tak si naser."
+        },
+        "houska": {
+          "person_line": "Díky šéfe. Jasně, je to místní hrad Štefan. Je to kousek odsud <ukazuje ti, kterým směrem>",
+          "answers": {
+            "1": {
+              "answer": null,
+              "next": null,
+              "action": {
+                "swap_inv_item_for_other_room_item": [
+                  "map",
+                  "zemla.png",
+                  "hradby_icon.png"
+                ],
+                "items_that_must_be_in_inventory_for_action": [
+                  "navstevnicka_karticka.png"
+                ]
+              },
+              "visited_person_line": "Už jsem vám to přeci ukázal, ne?",
+              "visible": true
+            }
+          }
+        },
+        "privydelek": {
+          "person_line": "Jasně, kde to je",
+          "answers": {
+            "1": {
+              "answer": "<Ukážeš bezdomovci místo bytu oběti>",
+              "next": "privydelek_action",
+              "action": null,
+              "visible": true
+            }
+          }
+        },
+        "privydelek_action": {
+          "person_line": "Jdu do toho.",
+          "answers": {
+            "1": {
+              "answer": null,
+              "next": null,
+              "action": {
+                "move_person_other_room_plus_modify_door_other_room": {
+                  "room": "chodba_bytu_obeti_after",
+                  "person": "homeless_stealing",
+                  "condition_item_exists": {
+                    "item": "skrin_pojistky_open_switch_down.png",
+                    "room": "chodba_bytu_obeti_during"
+                  },
+                  "plus_modify_door_item": "byt_obeti_icon.png",
+                  "plus_modify_door_room": "map",
+                  "plus_modify_door_new_room": "chodba_bytu_obeti_after"
+                }
+              },
+              "visible": true,
+              "visited_person_line": "To už jsme řešili, ne?"
+            }
+          }
+        }
+      },
+      "img_duration": 180
+    },
+    "smazka": {
+      "description": "Pokecat se smažkou",
+      "coords": [
+        0.6653645833333333,
+        0.5787637088733799
+      ],
+      "visible": true,
+      "combinable_with": "",
+      "dialogue": {
+        "intro": {
+          "person_line": "Nazdar!",
+          "answers": {
+            "1": {
+              "answer": "Zdravím.",
+              "next": "nazdar",
+              "action": null,
+              "visible": true
+            },
+            "2": {
+              "answer": "Sháním nějaké uspávadlo - xanax, nebo tak. Vypadáš, že se vyznáš, víš mi něco doporučit? I kdy6, jak tě tak sleduju, ty máš spíš praktické znalosti z nabudzováků než utlmováků",
+              "next": "tip_na_heslo",
+              "action": null,
+              "visible": false
+            }
+          }
+        },
+        "nazdar": {
+          "person_line": "<Týpek len koulí očima a popotahuje nosem>"
+        },
+        "tip_na_heslo": {
+          "person_line": "Když se tě lékárnice zeptá na recept, řekni \"dneska nám sněží\" a dostaneš co jen budeš chtít. Není zač",
+          "answers": {
+            "1": {
+              "answer": "Máš to u mě kámo, moc jsi mi pomohl.",
+              "next": null,
+              "action": {
+                "add_dialogue_item_other_room": {
+                  "room": "lekarna",
+                  "person": "lekarnice",
+                  "stage": "uspavadlo",
+                  "answer": "2"
+                }
+              },
+              "visible": true,
+              "visited_person_line": "Už jsem ti přece dal tip na heslo."
+            }
+          }
+        }
+      },
+      "img_duration": 15
+    }
+  },
+  "background": "nadr.png",
+  "sound": "nadr.wav",
+  "first_visit_text": "V městečku Bahno bylo nalezeno tělo rozsekané na kusy. Podle toho, jak je zmasakrované to vypadá, že to možná ani neudělal člověk. K vyšetřování jsi byl přivolán ty, Pepík Novák, jakožto zkušený vyšetřovatel. Pokud nevíš, jak se hra ovládá, mrkni \"Ovládání\" v hlavním menu. Hodně štěstí"
+}

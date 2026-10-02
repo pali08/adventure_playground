@@ -1,6 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#define ASSETS_DIR "assets"
+#define ASSETS_ROOMS_DIR "assets/rooms"
+#define ASSETS_ANIMATIONS_DIR "assets/animations"
+
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX_FRAMES 64
