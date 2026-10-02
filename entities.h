@@ -53,8 +53,8 @@ typedef struct {
   Item items[MAX_ITEMS];
   int itemCount;
 
-  char background[16];            // max 15 chars + null terminator
-  char sound[16];                 // max 15 chars + null terminator
+  char background[MAX_NAME_LEN];            
+  char sound[MAX_NAME_LEN];                
   char firstVisitText[301];       // max 300 chars + null terminator
 } Room;
 

@@ -20,8 +20,8 @@ int main(void) {
   Person persons[MAX_PERSONS];
   Room room = {0};
 
-  LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items, MAX_ITEMS, persons,
-           MAX_PERSONS);
+  LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items, MAX_ITEMS,
+           persons, MAX_PERSONS);
   // int animCount = LoadAnimations(animations);
   // int animItemCount = LoadItems(items, MAX_ITEMS);
   // int animPersonCount = LoadPersons(persons, MAX_PERSONS);
@@ -36,7 +36,14 @@ int main(void) {
   int animItemIndices[MAX_ITEMS] = {0};
   int animPersonIndices[MAX_PERSONS] = {0};
 
-  Texture2D background = LoadTexture(room.background);
+  char bgPath[MAX_PATH_LEN];
+  snprintf(bgPath, sizeof(bgPath), "%s/%s", ASSETS_BACKGROUNDS_DIR,
+           room.background);
+  Texture2D background = LoadTexture(bgPath);
+
+  char soundPath[MAX_PATH_LEN];
+  snprintf(soundPath, sizeof(soundPath), "%s/%s", ASSETS_SOUNDS_DIR,
+           room.sound);
 
   SetTargetFPS(60);
 
