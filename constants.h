@@ -26,5 +26,8 @@
 
 #define MAX_ITEMS 20
 #define MAX_PERSONS 20
+#define MAX_INVENTORY_ITEMS 20
+#define INVENTORY_ROWS 2
+#define INVENTORY_COLUMNS 10
 
 #endif

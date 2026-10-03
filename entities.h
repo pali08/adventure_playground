@@ -58,6 +58,14 @@ typedef struct {
   char firstVisitText[301];       // max 300 chars + null terminator
 } Room;
 
+typedef struct {
+  Item items[MAX_INVENTORY_ITEMS];
+  int itemCount;
+  int columns;
+  int rows;
+  int cellSize; // e.g., 64 for 64×64 px cells
+} Inventory;
+
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items);
 void UpdatePersons(float *animTimers, int *animIndices, int animCount,
