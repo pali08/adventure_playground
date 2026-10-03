@@ -58,8 +58,6 @@ typedef struct {
   char firstVisitText[301];       // max 300 chars + null terminator
 } Room;
 
-int LoadItems(Item *items, int maxCount);
-int LoadPersons(Person *persons, int maxCount);
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items);
 void UpdatePersons(float *animTimers, int *animIndices, int animCount,
