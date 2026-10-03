@@ -6,39 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// --- Item loading ---
-Item LoadItem(const char *animFolder, float animFPS, Vector2 animPosition) {
-  Item item = {0};
-  item.anim = LoadAnimation(animFolder, animFPS, animPosition);
-  item.anim.active = true;
-  item.return_to_inventory_after_combine = false;
-  return item;
-}
-
-int LoadItems(Item *items, int maxCount) {
-  if (maxCount < 1)
-    return 0;
-  items[0] = LoadItem("animation", 0.5,
-                      (Vector2){GAME_WIDTH * 0.25f, GAME_HEIGHT * 0.25f});
-  items[1] = LoadItem("animation2", 2,
-                      (Vector2){GAME_WIDTH * 0.5f, GAME_HEIGHT * 0.5f});
-  return 2;
-}
-
-// --- Person loading ---
-Person LoadPerson(const char *animFolder, float animFPS, Vector2 animPosition) {
-  Person person = {0};
-  person.anim = LoadAnimation(animFolder, animFPS, animPosition);
-  return person;
-}
-
-int LoadPersons(Person *persons, int maxCount) {
-  if (maxCount < 1)
-    return 0;
-  persons[0] = LoadPerson("animation_person", 1,
-                          (Vector2){GAME_WIDTH * 0.7f, GAME_HEIGHT * 0.7f});
-  return 1;
-}
 
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items) {

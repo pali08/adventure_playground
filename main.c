@@ -22,10 +22,6 @@ int main(void) {
 
   LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items, MAX_ITEMS,
            persons, MAX_PERSONS);
-  // int animCount = LoadAnimations(animations);
-  // int animItemCount = LoadItems(items, MAX_ITEMS);
-  // int animPersonCount = LoadPersons(persons, MAX_PERSONS);
-  // Texture2D background = LoadTexture("nadr.png");
 
   printf("persons: %f", persons[0].anim.fps);
   printf("persons: %f", persons[1].anim.fps);
