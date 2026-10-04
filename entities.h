@@ -53,9 +53,9 @@ typedef struct {
   Item items[MAX_ITEMS];
   int itemCount;
 
-  char background[MAX_NAME_LEN];            
-  char sound[MAX_NAME_LEN];                
-  char firstVisitText[301];       // max 300 chars + null terminator
+  char background[MAX_NAME_LEN];
+  char sound[MAX_NAME_LEN];
+  char firstVisitText[301]; // max 300 chars + null terminator
 } Room;
 
 typedef struct {
@@ -72,4 +72,7 @@ void UpdatePersons(float *animTimers, int *animIndices, int animCount,
                    const Person *persons);
 void LoadRoom(const char *jsonFile, Room *room, Item *items, int maxItems,
               Person *persons, int maxPersons);
+void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,
+                   int maxItems);
+
 #endif // ENTITIES_H

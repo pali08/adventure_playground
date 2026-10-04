@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items) {
   for (int i = 0; i < animCount; i++) {
@@ -58,7 +57,6 @@ static Vector2 ParseVector2(cJSON *coords) {
   return (Vector2){x * GAME_WIDTH,
                    y * GAME_HEIGHT}; // convert to absolute coords
 }
-
 
 static void LoadRoomMetadata(const cJSON *root, Room *room) {
   if (!root || !room)
@@ -171,23 +169,49 @@ static void LoadItemFromJSON(const cJSON *itemObj, Item *item, size_t itemIndex,
   item->take_sound[0] = '\0';
 }
 
-static void LoadItemsFromJSON(const cJSON *jsonItems, Room *room, Item *items,
-                              int maxItems) {
-  if (!jsonItems || !room || !items || maxItems <= 0)
-    return;
+static int LoadItemsFromJSONGeneric(const cJSON *jsonItems, Item *items,
+                                    int maxItems) {
+  if (!jsonItems || !items || maxItems <= 0)
+    return 0;
 
-  room->itemCount = 0;
+  int count = 0;
   if (cJSON_IsObject(jsonItems)) {
     cJSON *itemObj = NULL;
     cJSON_ArrayForEach(itemObj, jsonItems) {
-      if (room->itemCount >= maxItems)
+      if (count >= maxItems)
         break;
-
-      LoadItemFromJSON(itemObj, &items[room->itemCount], room->itemCount,
-                       maxItems);
-      room->itemCount++;
+      LoadItemFromJSON(itemObj, &items[count], count, maxItems);
+      count++;
+    }
+  } else if (cJSON_IsArray(jsonItems)) {
+    // Handle array format (e.g., [ {"coords":[0.5,0.5], ...}, ... ])
+    for (int i = 0; i < cJSON_GetArraySize(jsonItems); i++) {
+      cJSON *itemObj = cJSON_GetArrayItem(jsonItems, i);
+      if (!cJSON_IsObject(itemObj))
+        continue;
+      if (count >= maxItems)
+        break;
+      LoadItemFromJSON(itemObj, &items[count], count, maxItems);
+      count++;
     }
   }
+  return count;
+}
+
+// Update existing room loader to use it:
+static void LoadItemsFromJSONRoom(const cJSON *jsonItems, Room *room,
+                                  Item *items, int maxItems) {
+  if (!jsonItems || !room || !items || maxItems <= 0)
+    return;
+  room->itemCount = LoadItemsFromJSONGeneric(jsonItems, items, maxItems);
+}
+
+static void LoadItemsFromJSONInventory(const cJSON *jsonItems,
+                                       Inventory *inventory, Item *items,
+                                       int maxItems) {
+  if (!jsonItems || !items || maxItems <= 0)
+    return;
+  inventory->itemCount = LoadItemsFromJSONGeneric(jsonItems, items, maxItems);
 }
 
 static void LoadPersonFromJSON(const cJSON *personObj, Person *person,
@@ -276,9 +300,40 @@ void LoadRoom(const char *jsonFile, Room *room, Item *items, int maxItems,
   }
 
   LoadRoomMetadata(root, room);
-  LoadItemsFromJSON(cJSON_GetObjectItem(root, "items"), room, items, maxItems);
+  LoadItemsFromJSONRoom(cJSON_GetObjectItem(root, "items"), room, items, maxItems);
   LoadPersonsFromJSON(cJSON_GetObjectItem(root, "persons"), room, persons,
                       maxPersons);
+
+  cJSON_Delete(root);
+}
+
+void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,
+                   int maxItems) {
+  if (!inventory || !jsonFile || !items || maxItems <= 0)
+    return;
+
+  *inventory = (Inventory){0};
+
+  char *jsonText = LoadFileText(jsonFile);
+  if (!jsonText) {
+    TraceLog(LOG_ERROR, "Failed to load JSON inventory file: %s", jsonFile);
+    return;
+  }
+
+  cJSON *root = cJSON_Parse(jsonText);
+  UnloadFileText(jsonText);
+  if (!root) {
+    TraceLog(LOG_ERROR, "Failed to parse inventory JSON: %s",
+             cJSON_GetErrorPtr());
+    return;
+  }
+
+  // cJSON *jsonItems = cJSON_GetObjectItem(root, "items");
+  // if (jsonItems) {
+  //  inventory->itemCount = LoadItemsFromJSONGeneric(jsonItems, items, maxItems);
+  //}
+  LoadItemsFromJSONInventory(cJSON_GetObjectItem(root, "items"), inventory, items, maxItems);
+
 
   cJSON_Delete(root);
 }
