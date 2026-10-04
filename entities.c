@@ -9,14 +9,16 @@
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items) {
   for (int i = 0; i < animCount; i++) {
-    const Item *item = &items[i];
-    if (!item->anim.active || item->anim.fps <= 0.0f)
+    const Animation *anim = &items[i].anim;
+
+    // Skip inactive or 1-frame (static) items
+    if (!anim->active || anim->frames.animFrameCount <= 1 || anim->fps <= 0.0f)
       continue;
 
     animTimers[i] += GetFrameTime();
-    if (animTimers[i] >= 1.0f / item->anim.fps) {
-      animTimers[i] -= 1.0f / item->anim.fps;
-      animIndices[i] = (animIndices[i] + 1) % item->anim.frames.animFrameCount;
+    if (animTimers[i] >= 1.0f / anim->fps) {
+      animTimers[i] -= 1.0f / anim->fps;
+      animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
     }
   }
 }
@@ -24,15 +26,15 @@ void UpdateItems(float *animTimers, int *animIndices, int animCount,
 void UpdatePersons(float *animTimers, int *animIndices, int animCount,
                    const Person *persons) {
   for (int i = 0; i < animCount; i++) {
-    const Person *person = &persons[i];
-    if (!person->anim.active || person->anim.fps <= 0.0f)
+    const Animation *anim = &persons[i].anim;
+
+    if (!anim->active || anim->frames.animFrameCount <= 1 || anim->fps <= 0.0f)
       continue;
 
     animTimers[i] += GetFrameTime();
-    if (animTimers[i] >= 1.0f / person->anim.fps) {
-      animTimers[i] -= 1.0f / person->anim.fps;
-      animIndices[i] =
-          (animIndices[i] + 1) % person->anim.frames.animFrameCount;
+    if (animTimers[i] >= 1.0f / anim->fps) {
+      animTimers[i] -= 1.0f / anim->fps;
+      animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
     }
   }
 }
@@ -300,7 +302,8 @@ void LoadRoom(const char *jsonFile, Room *room, Item *items, int maxItems,
   }
 
   LoadRoomMetadata(root, room);
-  LoadItemsFromJSONRoom(cJSON_GetObjectItem(root, "items"), room, items, maxItems);
+  LoadItemsFromJSONRoom(cJSON_GetObjectItem(root, "items"), room, items,
+                        maxItems);
   LoadPersonsFromJSON(cJSON_GetObjectItem(root, "persons"), room, persons,
                       maxPersons);
 
@@ -330,10 +333,11 @@ void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,
 
   // cJSON *jsonItems = cJSON_GetObjectItem(root, "items");
   // if (jsonItems) {
-  //  inventory->itemCount = LoadItemsFromJSONGeneric(jsonItems, items, maxItems);
+  //  inventory->itemCount = LoadItemsFromJSONGeneric(jsonItems, items,
+  //  maxItems);
   //}
-  LoadItemsFromJSONInventory(cJSON_GetObjectItem(root, "items"), inventory, items, maxItems);
-
+  LoadItemsFromJSONInventory(cJSON_GetObjectItem(root, "items"), inventory,
+                             items, maxItems);
 
   cJSON_Delete(root);
 }
