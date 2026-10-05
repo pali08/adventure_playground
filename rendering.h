@@ -6,17 +6,19 @@
 #include "raylib.h"
 
 // Draw
-void DrawItemsToRenderTexture(RenderTexture2D target,
-                              const Item *items, int itemCount,
-                              const int *itemIndices);
+void DrawItemsToRenderTexture(RenderTexture2D target, const Item *items,
+                              int itemCount, const int *itemIndices);
 
-void DrawPersonsToRenderTexture(RenderTexture2D target,
-                                const Person *persons, int personCount,
-                                const int *personIndices);
+void DrawPersonsToRenderTexture(RenderTexture2D target, const Person *persons,
+                                int personCount, const int *personIndices);
+
+void DrawInventoryToRenderTexture(RenderTexture2D target,
+                                  const Inventory *inventory, const Item *items,
+                                  int itemCount, const int *itemIndices);
 
 // Click handling
-void HandleItemClicks(const Item *items, int itemCount,
-                      const int *itemIndices, Vector2 virtualMouse);
+void HandleItemClicks(const Item *items, int itemCount, const int *itemIndices,
+                      Vector2 virtualMouse);
 
 void HandlePersonClicks(const Person *persons, int personCount,
                         const int *personIndices, Vector2 virtualMouse);

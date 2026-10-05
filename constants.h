@@ -19,7 +19,7 @@
 #define MAX_ANIMATIONS 10
 
 // Entities parameters length
-#define MAX_NAME_LEN 20
+#define MAX_NAME_LEN 30
 #define MAX_DESC_LEN 50
 #define MAX_MSG_LEN 50
 #define MAX_TYPE_LEN 20

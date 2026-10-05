@@ -6,20 +6,25 @@
 #include <stdio.h>
 #include <string.h>
 
+void SetFrame(const Animation *anim, float *animTimers, int *animIndices,
+              int i) {
+  // Skip inactive or 1-frame (static) items
+  if (!anim->active || anim->frames.animFrameCount <= 1 || anim->fps <= 0.0f)
+    return;
+
+  animTimers[i] += GetFrameTime();
+  if (animTimers[i] >= 1.0f / anim->fps) {
+    animTimers[i] -= 1.0f / anim->fps;
+    animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
+  }
+}
+
 void UpdateItems(float *animTimers, int *animIndices, int animCount,
                  const Item *items) {
   for (int i = 0; i < animCount; i++) {
     const Animation *anim = &items[i].anim;
 
-    // Skip inactive or 1-frame (static) items
-    if (!anim->active || anim->frames.animFrameCount <= 1 || anim->fps <= 0.0f)
-      continue;
-
-    animTimers[i] += GetFrameTime();
-    if (animTimers[i] >= 1.0f / anim->fps) {
-      animTimers[i] -= 1.0f / anim->fps;
-      animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
-    }
+    SetFrame(anim, animTimers, animIndices, i);
   }
 }
 
@@ -27,15 +32,7 @@ void UpdatePersons(float *animTimers, int *animIndices, int animCount,
                    const Person *persons) {
   for (int i = 0; i < animCount; i++) {
     const Animation *anim = &persons[i].anim;
-
-    if (!anim->active || anim->frames.animFrameCount <= 1 || anim->fps <= 0.0f)
-      continue;
-
-    animTimers[i] += GetFrameTime();
-    if (animTimers[i] >= 1.0f / anim->fps) {
-      animTimers[i] -= 1.0f / anim->fps;
-      animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
-    }
+    SetFrame(anim, animTimers, animIndices, i);
   }
 }
 
@@ -93,10 +90,6 @@ static void LoadItemFromJSON(const cJSON *itemObj, Item *item, size_t itemIndex,
   cJSON *coords = cJSON_GetObjectItem(itemObj, "coords");
   item->anim.position = ParseVector2(coords);
 
-  // visibility
-  cJSON *visible = cJSON_GetObjectItem(itemObj, "visible");
-  item->anim.active = cJSON_IsTrue(visible);
-
   // FPS
   cJSON *imgDuration = cJSON_GetObjectItem(itemObj, "img_duration");
   float fps = (cJSON_IsNumber(imgDuration) && imgDuration->valuedouble > 0)
@@ -119,6 +112,8 @@ static void LoadItemFromJSON(const cJSON *itemObj, Item *item, size_t itemIndex,
   }
 
   item->anim = LoadAnimation(animFolder, item->anim.fps, item->anim.position);
+  cJSON *visible = cJSON_GetObjectItem(itemObj, "visible");
+  item->anim.active = cJSON_IsTrue(visible); // ← this now persists!
   if (!item->anim.active) {
     TraceLog(LOG_WARNING,
              "Failed to load animation frames for item '%s' in folder '%s'",
@@ -227,9 +222,6 @@ static void LoadPersonFromJSON(const cJSON *personObj, Person *person,
   cJSON *coords = cJSON_GetObjectItem(personObj, "coords");
   person->anim.position = ParseVector2(coords);
 
-  cJSON *visible = cJSON_GetObjectItem(personObj, "visible");
-  person->anim.active = cJSON_IsTrue(visible);
-
   cJSON *imgDuration = cJSON_GetObjectItem(personObj, "img_duration");
   float fps = (cJSON_IsNumber(imgDuration) && imgDuration->valuedouble > 0)
                   ? 60.0f / (float)imgDuration->valuedouble
@@ -241,6 +233,10 @@ static void LoadPersonFromJSON(const cJSON *personObj, Person *person,
            person->name);
   person->anim =
       LoadAnimation(animFolder, person->anim.fps, person->anim.position);
+
+  cJSON *visible = cJSON_GetObjectItem(personObj, "visible");
+  person->anim.active = cJSON_IsTrue(visible);
+
   if (!person->anim.active) {
     TraceLog(LOG_WARNING,
              "Failed to load animation frames for person '%s' in folder '%s'",
@@ -316,6 +312,8 @@ void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,
     return;
 
   *inventory = (Inventory){0};
+  inventory->rows = INVENTORY_ROWS;
+  inventory->columns = INVENTORY_COLUMNS;
 
   char *jsonText = LoadFileText(jsonFile);
   if (!jsonText) {

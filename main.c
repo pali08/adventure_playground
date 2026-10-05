@@ -18,19 +18,25 @@ int main(void) {
   // Animation animations[MAX_ANIMATIONS];
   Item items[MAX_ITEMS];
   Person persons[MAX_PERSONS];
+  Item inventoryItems[MAX_INVENTORY_ITEMS];
   Room room = {0};
+  Inventory inventory;
 
   LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items, MAX_ITEMS,
            persons, MAX_PERSONS);
+  LoadInventory(ASSETS_ROOMS_DIR "/descriptions_inventory.json", &inventory,
+                inventoryItems, MAX_INVENTORY_ITEMS);
 
   printf("persons: %f", persons[0].anim.fps);
   printf("persons: %f", persons[1].anim.fps);
 
   float animItemTimers[MAX_ITEMS] = {0};
   float animPersonTimers[MAX_PERSONS] = {0};
+  float animInventoryTimers[MAX_INVENTORY_ITEMS] = {0};
 
   int animItemIndices[MAX_ITEMS] = {0};
   int animPersonIndices[MAX_PERSONS] = {0};
+  int animInventoryIndices[MAX_INVENTORY_ITEMS] = {0};
 
   char bgPath[MAX_PATH_LEN];
   snprintf(bgPath, sizeof(bgPath), "%s/%s", ASSETS_BACKGROUNDS_DIR,
@@ -52,6 +58,8 @@ int main(void) {
     UpdateItems(animItemTimers, animItemIndices, room.itemCount, items);
     UpdatePersons(animPersonTimers, animPersonIndices, room.personCount,
                   persons);
+    UpdateItems(animInventoryTimers, animInventoryIndices, inventory.itemCount,
+                inventoryItems);
 
     BeginTextureMode(target);
     ClearBackground(DARKGRAY);
@@ -61,6 +69,8 @@ int main(void) {
     DrawItemsToRenderTexture(target, items, room.itemCount, animItemIndices);
     DrawPersonsToRenderTexture(target, persons, room.personCount,
                                animPersonIndices);
+    DrawInventoryToRenderTexture(target, &inventory, inventoryItems,
+                                 inventory.itemCount, animInventoryIndices);
 
     HandleItemClicks(items, room.itemCount, animItemIndices, virtualMouse);
     HandlePersonClicks(persons, room.personCount, animPersonIndices,
@@ -72,6 +82,8 @@ int main(void) {
   for (int i = 0; i < room.personCount; i++)
     UnloadAnimation(&persons[i].anim);
   for (int i = 0; i < room.itemCount; i++)
+    UnloadAnimation(&items[i].anim);
+  for (int i = 0; i < inventory.itemCount; i++)
     UnloadAnimation(&items[i].anim);
   UnloadRenderTexture(target);
   CloseWindow();
