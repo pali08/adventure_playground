@@ -1,4 +1,5 @@
 #include "rendering.h"
+#include "raylib.h"
 #include <math.h>
 #include <stdint.h>
 
@@ -56,19 +57,34 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
                                   const int *itemIndices) {
   if (!inventory || !items || itemCount <= 0 || !itemIndices) return;
 
-  int cellSize = GAME_WIDTH / inventory->columns; // 1920 / 10 = 192
+  // Calculate grid dimensions based on screen height
+  int screenHeight = GetScreenHeight();
+  int cellSize = screenHeight / 10; // 1/14th of screen height
   int gridHeight = inventory->rows * cellSize;
+  int inventoryWidth = inventory->columns * cellSize;
+  
+  // Center horizontally
+  int offsetX = (GetScreenWidth() - inventoryWidth) / 2;
+  
+  // Add a small top margin (5 pixels)
+  int offsetY = INVENTORY_GRID_TOP_OFFSET;
+
+  // Reserve space for grid lines and padding
+  //const int INVENTORY_GRID_THICKNESS = 2; // define if not already defined elsewhere
+  int maxDrawSize = cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING; // e.g., 78 - 2 - 2 = 74
 
   BeginTextureMode(target);
 
-  // Draw grid lines (only in top `gridHeight` area)
+  // Draw grid lines
   for (int row = 0; row <= inventory->rows; row++) {
-    int y = row * cellSize;
-    DrawLine(0, y, GAME_WIDTH, y, BLACK);
+    int y = offsetY + row * cellSize;
+    DrawLineEx((Vector2){offsetX, y}, (Vector2){offsetX + inventoryWidth, y},
+               INVENTORY_GRID_THICKNESS, BLACK);
   }
   for (int col = 0; col <= inventory->columns; col++) {
-    int x = col * cellSize;
-    DrawLine(x, 0, x, gridHeight, BLACK);
+    int x = offsetX + col * cellSize;
+    DrawLineEx((Vector2){x, offsetY}, (Vector2){x, offsetY + gridHeight},
+               INVENTORY_GRID_THICKNESS, BLACK);
   }
 
   // Draw items in grid order (row-major)
@@ -83,11 +99,11 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
     float w = (float)anim->frames.animSizes[idx].x;
     float h = (float)anim->frames.animSizes[idx].y;
 
-    // Calculate scale to fit into 192x192 without exceeding it
+    // Scaling logic: only scale if larger than maxDrawSize, otherwise keep original
     float scale = 1.0f;
-    if (w > cellSize || h > cellSize) {
-      float scaleX = cellSize / w;
-      float scaleY = cellSize / h;
+    if (w > maxDrawSize || h > maxDrawSize) {
+      float scaleX = (float)maxDrawSize / w;
+      float scaleY = (float)maxDrawSize / h;
       scale = fminf(scaleX, scaleY);
     }
 
@@ -98,19 +114,12 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
     int row = i / inventory->columns;
     int col = i % inventory->columns;
 
-    int cellX = col * cellSize;
-    int cellY = row * cellSize;
+    int cellX = offsetX + col * cellSize;
+    int cellY = offsetY + row * cellSize;
 
     // Center in cell
-    int offsetX = (cellSize - drawW) / 2;
-    int offsetY = (cellSize - drawH) / 2;
-
-    Rectangle destRect = {
-        .x = cellX + offsetX,
-        .y = cellY + offsetY,
-        .width = drawW,
-        .height = drawH
-    };
+    int cellCenterX = cellX + (cellSize - drawW) / 2;
+    int cellCenterY = cellY + (cellSize - drawH) / 2;
 
     // Use sourceRect with positive height (no flipping)
     Rectangle sourceRect = {
@@ -118,6 +127,13 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
         .y = 0,
         .width = (float)frame.width,
         .height = (float)frame.height
+    };
+
+    Rectangle destRect = {
+        .x = cellCenterX,
+        .y = cellCenterY,
+        .width = drawW,
+        .height = drawH
     };
 
     DrawTexturePro(frame, sourceRect, destRect, (Vector2){0, 0}, 0, WHITE);
