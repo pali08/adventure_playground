@@ -75,6 +75,8 @@ int main(void) {
     HandleItemClicks(items, room.itemCount, animItemIndices, virtualMouse);
     HandlePersonClicks(persons, room.personCount, animPersonIndices,
                        virtualMouse);
+    HandleInventoryItemClicks(inventoryItems, inventory.itemCount, animInventoryIndices, &inventory,
+                              virtualMouse);
 
     PresentToScreen(target, scale, GAME_WIDTH, GAME_HEIGHT);
   }
