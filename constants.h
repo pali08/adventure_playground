@@ -11,21 +11,17 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX_FRAMES 64
 #define MAX_PATH_LEN 256
-#define GAME_SCREEN_WIDTH 1920
-#define GAME_SCREEN_HEIGHT 1080
 #define GAME_WIDTH 1920
 #define GAME_HEIGHT 1080
-#define MAX_ANIM_FRAMES 10
-#define MAX_ANIMATIONS 10
 
 // Entities parameters length
 #define MAX_NAME_LEN 30
-#define MAX_DESC_LEN 50
-#define MAX_MSG_LEN 50
-#define MAX_TYPE_LEN 20
+#define MAX_DESC_LEN 100
+#define MAX_MSG_LEN 301
+#define MAX_TYPE_LEN 30
 
-#define MAX_ITEMS 20
-#define MAX_PERSONS 20
+#define MAX_ITEMS 30
+#define MAX_PERSONS 30
 #define MAX_INVENTORY_ITEMS 20
 #define INVENTORY_ROWS 2
 #define INVENTORY_COLUMNS 10
