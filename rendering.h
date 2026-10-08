@@ -16,18 +16,8 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
                                   const Inventory *inventory, const Item *items,
                                   int itemCount, const int *itemIndices);
 
-// Click handling
-void HandleItemClicks(const Item *items, int itemCount, const int *itemIndices,
-                      Vector2 virtualMouse);
-
-void HandlePersonClicks(const Person *persons, int personCount,
-                        const int *personIndices, Vector2 virtualMouse);
-void HandleInventoryItemClicks(const Item *items, int itemCount,
-                               const int *itemIndices,
-                               const Inventory *inventory, Vector2 virtualMouse);
-
-    // Present
-    void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
-                         int gameHeight);
+// Present
+void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
+                     int gameHeight);
 
 #endif // RENDERING_H

@@ -12,6 +12,7 @@
                 "${workspaceFolder}/input.c",
                 "${workspaceFolder}/rendering.c",
                 "${workspaceFolder}/entities.c",
+                "${workspaceFolder}/handle_input.c",
                 "${workspaceFolder}/cJSON.c",
                 "-I${env:HOME}/non_package_sw/raylib/src",
                 "-L${env:HOME}/non_package_sw/raylib/build/raylib",

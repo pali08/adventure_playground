@@ -1,6 +1,7 @@
 #include "animation.h"
 #include "constants.h"
 #include "entities.h"
+#include "handle_input.h"
 #include "input.h"
 #include "raylib.h"
 #include "rendering.h"
