@@ -21,12 +21,14 @@ int main(void) {
   Person persons[MAX_PERSONS];
   Item inventoryItems[MAX_INVENTORY_ITEMS];
   Room room = {0};
-  Inventory inventory;
+  Inventory inventory = {0};
 
-  LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items, MAX_ITEMS,
-           persons, MAX_PERSONS);
+  LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items,
+           room.invisibleItems, MAX_ITEMS, MAX_ITEMS, persons,
+           room.invisiblePersons, MAX_PERSONS, MAX_PERSONS);
   LoadInventory(ASSETS_ROOMS_DIR "/descriptions_inventory.json", &inventory,
-                inventoryItems, MAX_INVENTORY_ITEMS);
+                inventoryItems, inventory.invisibleItems, MAX_INVENTORY_ITEMS,
+                MAX_INVENTORY_ITEMS);
 
   printf("persons: %f", persons[0].anim.fps);
   printf("persons: %f", persons[1].anim.fps);
@@ -42,36 +44,38 @@ int main(void) {
 
   SetTargetFPS(60);
 
-  // ... earlier initialization code ...
+  printf("Inventory invisible items count: %d\n", inventory.invisibleItemCount);
+  printf("Room invisible items count: %d\n", room.invisibleItemCount);
+  printf("Room invisible persons count: %d\n", room.invisiblePersonCount);
 
-// ... after load ...
+  while (!WindowShouldClose()) {
+    float scale = CalculateScaleFactor();
+    Vector2 virtualMouse = CalculateVirtualMouse(scale);
 
-while (!WindowShouldClose()) {
-  float scale = CalculateScaleFactor();
-  Vector2 virtualMouse = CalculateVirtualMouse(scale);
+    // Update animations in-place
+    UpdateItems(room.itemCount, items);
+    UpdatePersons(room.personCount, persons);
+    UpdateItems(inventory.itemCount, inventoryItems); // reuses UpdateItems
 
-  // Update animations in-place
-  UpdateItems(room.itemCount, items);
-  UpdatePersons(room.personCount, persons);
-  UpdateItems(inventory.itemCount, inventoryItems); // reuses UpdateItems
+    // Draw with current frame (animIndex stored inside anim)
+    BeginTextureMode(target);
+    ClearBackground(DARKGRAY);
+    DrawTexture(background, 0, 0, WHITE);
+    EndTextureMode();
 
-  // Draw with current frame (animIndex stored inside anim)
-  BeginTextureMode(target);
-  ClearBackground(DARKGRAY);
-  DrawTexture(background, 0, 0, WHITE);
-  EndTextureMode();
+    DrawItemsToRenderTexture(target, items, room.itemCount);       // no indices
+    DrawPersonsToRenderTexture(target, persons, room.personCount); // no indices
+    DrawInventoryToRenderTexture(target, &inventory, inventoryItems,
+                                 inventory.itemCount); // no indices
 
-  DrawItemsToRenderTexture(target, items, room.itemCount);           // no indices
-  DrawPersonsToRenderTexture(target, persons, room.personCount);     // no indices
-  DrawInventoryToRenderTexture(target, &inventory, inventoryItems, inventory.itemCount); // no indices
+    // Click handling — no indices passed
+    HandleItemClicks(items, room.itemCount, virtualMouse);
+    HandlePersonClicks(persons, room.personCount, virtualMouse);
+    HandleInventoryItemClicks(inventoryItems, inventory.itemCount, &inventory,
+                              virtualMouse);
 
-  // Click handling — no indices passed
-  HandleItemClicks(items, room.itemCount, virtualMouse);
-  HandlePersonClicks(persons, room.personCount, virtualMouse);
-  HandleInventoryItemClicks(inventoryItems, inventory.itemCount, &inventory, virtualMouse);
-
-  PresentToScreen(target, scale, GAME_WIDTH, GAME_HEIGHT);
-}
+    PresentToScreen(target, scale, GAME_WIDTH, GAME_HEIGHT);
+  }
   for (int i = 0; i < room.personCount; i++)
     UnloadAnimation(&persons[i].anim);
   for (int i = 0; i < room.itemCount; i++)

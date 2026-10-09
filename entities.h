@@ -50,27 +50,39 @@ typedef struct {
   Person persons[MAX_PERSONS];
   int personCount;
 
+  Person invisiblePersons[MAX_PERSONS]; // NEW
+  int invisiblePersonCount;              // NEW
+
   Item items[MAX_ITEMS];
   int itemCount;
 
+  Item invisibleItems[MAX_ITEMS]; // NEW
+  int invisibleItemCount;          // NEW
+
   char background[MAX_NAME_LEN];
   char sound[MAX_NAME_LEN];
-  char firstVisitText[301]; // max 300 chars + null terminator
+  char firstVisitText[301];
 } Room;
 
 typedef struct {
   Item items[MAX_INVENTORY_ITEMS];
   int itemCount;
+
+  Item invisibleItems[MAX_INVENTORY_ITEMS]; // NEW
+  int invisibleItemCount;                    // NEW
+
   int columns;
   int rows;
-  int cellSize; // e.g., 64 for 64×64 px cells
+  int cellSize;
 } Inventory;
 
 void UpdateItems(int itemCount, Item *items);
 void UpdatePersons(int personCount, Person *persons);
-void LoadRoom(const char *jsonFile, Room *room, Item *items, int maxItems,
-              Person *persons, int maxPersons);
+void LoadRoom(const char *jsonFile, Room *room, Item *items,
+              Item *invisibleItems, int maxItems, int maxInvisibleItems,
+              Person *persons, Person *invisiblePersons, int maxPersons,
+              int maxInvisiblePersons);
 void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,
-                   int maxItems);
+                   Item *invisibleItems, int maxItems, int maxInvisibleItems);
 
 #endif // ENTITIES_H
