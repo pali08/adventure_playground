@@ -1,23 +1,18 @@
-
-
 #include "animation.h"
 #include "entities.h"
 #include <math.h>
 #include <stdint.h>
 
-void HandleItemClicks(const Item *items, int itemCount, const int *itemIndices,
-                      Vector2 virtualMouse) {
+void HandleItemClicks(const Item *items, int itemCount, Vector2 virtualMouse) {
   if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     return;
 
   for (int i = 0; i < itemCount; i++) {
     const Animation *anim = &items[i].anim;
-    if (!anim->active)
+    if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = itemIndices[i];
-    if (idx < 0 || idx >= anim->frames.animFrameCount)
-      continue;
+    int idx = anim->animIndex;  // ← use stored index
 
     Vector2 size = anim->frames.animSizes[idx];
     if (virtualMouse.x >= anim->position.x &&
@@ -39,18 +34,16 @@ void HandleItemClicks(const Item *items, int itemCount, const int *itemIndices,
 }
 
 void HandlePersonClicks(const Person *persons, int personCount,
-                        const int *personIndices, Vector2 virtualMouse) {
+                        Vector2 virtualMouse) {
   if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     return;
 
   for (int i = 0; i < personCount; i++) {
     const Animation *anim = &persons[i].anim;
-    if (!anim->active)
+    if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = personIndices[i];
-    if (idx < 0 || idx >= anim->frames.animFrameCount)
-      continue;
+    int idx = anim->animIndex;  // ← use stored index
 
     Vector2 size = anim->frames.animSizes[idx];
     if (virtualMouse.x >= anim->position.x &&
@@ -72,13 +65,12 @@ void HandlePersonClicks(const Person *persons, int personCount,
 }
 
 void HandleInventoryItemClicks(const Item *items, int itemCount,
-                               const int *itemIndices,
                                const Inventory *inventory,
                                Vector2 virtualMouse) {
   if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || !inventory)
     return;
 
-  // Calculate grid dimensions based on screen height
+  // ... [same grid setup code] ...
   int screenHeight = GetScreenHeight();
   int cellSize = screenHeight / 10;
   int gridHeight = inventory->rows * cellSize;
@@ -87,19 +79,18 @@ void HandleInventoryItemClicks(const Item *items, int itemCount,
   int offsetX = (GetScreenWidth() - inventoryWidth) / 2;
   int offsetY = INVENTORY_GRID_TOP_OFFSET;
 
-  const int maxDrawSize =
-      cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
+  const int maxDrawSize = cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
 
   for (int i = 0; i < itemCount; i++) {
     const Animation *anim = &items[i].anim;
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = itemIndices[i];
+    int idx = anim->animIndex;  // ← use stored index
     if (idx < 0 || idx >= anim->frames.animFrameCount)
       continue;
 
-    // Compute draw size (exactly as in DrawInventoryToRenderTexture)
+    // Compute draw size (same as in DrawInventoryToRenderTexture)
     Vector2 size = anim->frames.animSizes[idx];
     float w = (float)size.x;
     float h = (float)size.y;
@@ -114,8 +105,7 @@ void HandleInventoryItemClicks(const Item *items, int itemCount,
     int drawW = (int)(w * scale);
     int drawH = (int)(h * scale);
 
-    // Determine cell and center position (exactly as in
-    // DrawInventoryToRenderTexture)
+    // Determine cell and center position (same as drawing)
     int row = i / inventory->columns;
     int col = i % inventory->columns;
     int cellX = offsetX + col * cellSize;
@@ -123,11 +113,10 @@ void HandleInventoryItemClicks(const Item *items, int itemCount,
     int cellCenterX = cellX + (cellSize - drawW) / 2;
     int cellCenterY = cellY + (cellSize - drawH) / 2;
 
-    // Check if mouse is inside the *drawn* item rectangle
     if (virtualMouse.x >= cellCenterX && virtualMouse.x < cellCenterX + drawW &&
         virtualMouse.y >= cellCenterY && virtualMouse.y < cellCenterY + drawH) {
-      // Map mouse coordinates to original image coordinates *as DrawTexturePro
-      // does*
+
+      // Map to original image coords
       float dx = virtualMouse.x - cellCenterX;
       float dy = virtualMouse.y - cellCenterY;
 
@@ -138,14 +127,11 @@ void HandleInventoryItemClicks(const Item *items, int itemCount,
       int px = (int)srcX;
       int py = (int)srcY;
 
-      // Clamp to valid range (defensive, though math above should keep it in
-      // bounds)
       if (px >= 0 && px < img.width && py >= 0 && py < img.height) {
         uint8_t *pixels = (uint8_t *)img.data;
         uint8_t alpha = pixels[(py * img.width + px) * 4 + 3];
         if (alpha > 128) {
-          TraceLog(LOG_INFO, "click on inventory item %d: %s", i,
-                   items[i].name);
+          TraceLog(LOG_INFO, "click on inventory item %d: %s", i, items[i].name);
         }
       }
     }

@@ -66,10 +66,8 @@ typedef struct {
   int cellSize; // e.g., 64 for 64×64 px cells
 } Inventory;
 
-void UpdateItems(float *animTimers, int *animIndices, int animCount,
-                 const Item *items);
-void UpdatePersons(float *animTimers, int *animIndices, int animCount,
-                   const Person *persons);
+void UpdateItems(int itemCount, Item *items);
+void UpdatePersons(int personCount, Person *persons);
 void LoadRoom(const char *jsonFile, Room *room, Item *items, int maxItems,
               Person *persons, int maxPersons);
 void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,

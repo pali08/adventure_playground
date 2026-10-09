@@ -6,33 +6,27 @@
 #include <stdio.h>
 #include <string.h>
 
-void SetFrame(const Animation *anim, float *animTimers, int *animIndices,
-              int i) {
-  // Skip inactive or 1-frame (static) items
+// Replace SetFrame() with:
+void UpdateAnimation(Animation *anim) {
   if (!anim->active || anim->frames.animFrameCount <= 1 || anim->fps <= 0.0f)
     return;
 
-  animTimers[i] += GetFrameTime();
-  if (animTimers[i] >= 1.0f / anim->fps) {
-    animTimers[i] -= 1.0f / anim->fps;
-    animIndices[i] = (animIndices[i] + 1) % anim->frames.animFrameCount;
+  anim->animTimer += GetFrameTime();
+  if (anim->animTimer >= 1.0f / anim->fps) {
+    anim->animTimer -= 1.0f / anim->fps;
+    anim->animIndex = (anim->animIndex + 1) % anim->frames.animFrameCount;
   }
 }
 
-void UpdateItems(float *animTimers, int *animIndices, int animCount,
-                 const Item *items) {
-  for (int i = 0; i < animCount; i++) {
-    const Animation *anim = &items[i].anim;
-
-    SetFrame(anim, animTimers, animIndices, i);
+void UpdateItems(int itemCount, Item *items) {
+  for (int i = 0; i < itemCount; i++) {
+    UpdateAnimation(&items[i].anim);
   }
 }
 
-void UpdatePersons(float *animTimers, int *animIndices, int animCount,
-                   const Person *persons) {
-  for (int i = 0; i < animCount; i++) {
-    const Animation *anim = &persons[i].anim;
-    SetFrame(anim, animTimers, animIndices, i);
+void UpdatePersons(int personCount, Person *persons) {
+  for (int i = 0; i < personCount; i++) {
+    UpdateAnimation(&persons[i].anim);
   }
 }
 

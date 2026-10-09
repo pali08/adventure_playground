@@ -1,10 +1,10 @@
+// animation.h
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
 #include "raylib.h"
 #include "constants.h"
 
-// Internal: holds frames (textures, images, sizes, paths) for *one* animation
 typedef struct AnimationFrameSet {
   Texture animTextures[MAX_FRAMES];
   Image animImages[MAX_FRAMES];
@@ -13,12 +13,13 @@ typedef struct AnimationFrameSet {
   int animFrameCount;
 } AnimationFrameSet;
 
-// Single animation definition: its frames + playback & position
 typedef struct {
   AnimationFrameSet frames;
   float fps;
   Vector2 position;
-  bool active; // to enable/disable animations
+  float animTimer;   // runtime timer
+  int animIndex;     // current frame index
+  bool active;       // optional, for toggling animation
 } Animation;
 
 Animation LoadAnimation(const char *folder, float fps, Vector2 position);

@@ -5,73 +5,56 @@
 
 // ... existing includes ...
 
+// ... existing code ...
+
 void DrawItemsToRenderTexture(RenderTexture2D target, const Item *items,
-                              int itemCount, const int *itemIndices) {
+                              int itemCount) {
   BeginTextureMode(target);
 
   for (int i = 0; i < itemCount; i++) {
     const Animation *anim = &items[i].anim;
-    int idx = itemIndices[i];
-
-    if (!anim->active || anim->frames.animFrameCount == 0 ||
-        idx >= anim->frames.animFrameCount) {
+    if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
-    }
 
-    DrawTexture(anim->frames.animTextures[idx], (int)anim->position.x,
-                (int)anim->position.y, WHITE);
+    DrawTexture(anim->frames.animTextures[anim->animIndex],  // ← use anim->animIndex
+                (int)anim->position.x, (int)anim->position.y, WHITE);
   }
 
   EndTextureMode();
 }
 
 void DrawPersonsToRenderTexture(RenderTexture2D target, const Person *persons,
-                                int personCount, const int *personIndices) {
+                                int personCount) {
 
-  // NOTE: This *overwrites* background. If you want layering, draw items first.
   BeginTextureMode(target);
 
   for (int i = 0; i < personCount; i++) {
     const Animation *anim = &persons[i].anim;
-    int idx = personIndices[i];
-
-    if (!anim->active || anim->frames.animFrameCount == 0 ||
-        idx >= anim->frames.animFrameCount) {
+    if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
-    }
 
-    DrawTexture(anim->frames.animTextures[idx], (int)anim->position.x,
-                (int)anim->position.y, WHITE);
+    DrawTexture(anim->frames.animTextures[anim->animIndex],  // ← use anim->animIndex
+                (int)anim->position.x, (int)anim->position.y, WHITE);
   }
 
   EndTextureMode();
 }
 
-// ... existing code ...
-
 void DrawInventoryToRenderTexture(RenderTexture2D target,
                                   const Inventory *inventory, const Item *items,
-                                  int itemCount, const int *itemIndices) {
-  if (!inventory || !items || itemCount <= 0 || !itemIndices)
+                                  int itemCount) {
+  if (!inventory || !items || itemCount <= 0)
     return;
 
-  // Calculate grid dimensions based on screen height
   int screenHeight = GetScreenHeight();
-  int cellSize = screenHeight / 10; // 1/14th of screen height
+  int cellSize = screenHeight / 10;
   int gridHeight = inventory->rows * cellSize;
   int inventoryWidth = inventory->columns * cellSize;
 
-  // Center horizontally
   int offsetX = (GetScreenWidth() - inventoryWidth) / 2;
-
-  // Add a small top margin (5 pixels)
   int offsetY = INVENTORY_GRID_TOP_OFFSET;
 
-  // Reserve space for grid lines and padding
-  // const int INVENTORY_GRID_THICKNESS = 2; // define if not already defined
-  // elsewhere
-  int maxDrawSize = cellSize - INVENTORY_GRID_THICKNESS -
-                    INVENTORY_GRID_ITEM_PADDING; // e.g., 78 - 2 - 2 = 74
+  const int maxDrawSize = cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
 
   BeginTextureMode(target);
 
@@ -87,13 +70,13 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
                INVENTORY_GRID_THICKNESS, BLACK);
   }
 
-  // Draw items in grid order (row-major)
+  // Draw items
   for (int i = 0; i < itemCount; i++) {
     const Animation *anim = &items[i].anim;
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = itemIndices[i];
+    int idx = anim->animIndex;  // ← use anim->animIndex
     if (idx < 0 || idx >= anim->frames.animFrameCount)
       continue;
 
@@ -101,8 +84,6 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
     float w = (float)anim->frames.animSizes[idx].x;
     float h = (float)anim->frames.animSizes[idx].y;
 
-    // Scaling logic: only scale if larger than maxDrawSize, otherwise keep
-    // original
     float scale = 1.0f;
     if (w > maxDrawSize || h > maxDrawSize) {
       float scaleX = (float)maxDrawSize / w;
@@ -113,18 +94,14 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
     int drawW = (int)(w * scale);
     int drawH = (int)(h * scale);
 
-    // Determine cell position (row-major)
     int row = i / inventory->columns;
     int col = i % inventory->columns;
 
     int cellX = offsetX + col * cellSize;
     int cellY = offsetY + row * cellSize;
-
-    // Center in cell
     int cellCenterX = cellX + (cellSize - drawW) / 2;
     int cellCenterY = cellY + (cellSize - drawH) / 2;
 
-    // Use sourceRect with positive height (no flipping)
     Rectangle sourceRect = {.x = 0,
                             .y = 0,
                             .width = (float)frame.width,

@@ -7,14 +7,14 @@
 
 // Draw
 void DrawItemsToRenderTexture(RenderTexture2D target, const Item *items,
-                              int itemCount, const int *itemIndices);
+                              int itemCount);
 
 void DrawPersonsToRenderTexture(RenderTexture2D target, const Person *persons,
-                                int personCount, const int *personIndices);
+                                int personCount);
 
 void DrawInventoryToRenderTexture(RenderTexture2D target,
                                   const Inventory *inventory, const Item *items,
-                                  int itemCount, const int *itemIndices);
+                                  int itemCount);
 
 // Present
 void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,

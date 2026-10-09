@@ -63,7 +63,9 @@ Animation LoadAnimation(const char *folder, float fps, Vector2 position) {
   anim.frames = LoadAnimationFrameSet(folder);
   anim.fps = fps;
   anim.position = position;
-  //anim.active = anim.frames.animFrameCount > 0;
+  anim.animIndex = 0;
+  anim.animTimer = 0.0f;
+  anim.active = anim.frames.animFrameCount > 0;
   return anim;
 }
 
@@ -76,5 +78,6 @@ void UnloadAnimation(Animation *anim) {
   }
   anim->active = false;
   anim->frames.animFrameCount = 0;
+  anim->animTimer = 0.0f;
+  anim->animIndex = 0;
 }
-
