@@ -9,6 +9,24 @@
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build raylib program"
     },
-    
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "/home/pali/raylib_projects/adventure_playground",
+      "program": "/home/pali/raylib_projects/adventure_playground/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
   ]
 }
