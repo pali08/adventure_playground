@@ -51,13 +51,13 @@ typedef struct {
   int personCount;
 
   Person invisiblePersons[MAX_PERSONS]; // NEW
-  int invisiblePersonCount;              // NEW
+  int invisiblePersonCount;             // NEW
 
   Item items[MAX_ITEMS];
   int itemCount;
 
   Item invisibleItems[MAX_ITEMS]; // NEW
-  int invisibleItemCount;          // NEW
+  int invisibleItemCount;         // NEW
 
   char background[MAX_NAME_LEN];
   char sound[MAX_NAME_LEN];
@@ -69,7 +69,7 @@ typedef struct {
   int itemCount;
 
   Item invisibleItems[MAX_INVENTORY_ITEMS]; // NEW
-  int invisibleItemCount;                    // NEW
+  int invisibleItemCount;                   // NEW
 
   int columns;
   int rows;
@@ -84,5 +84,13 @@ void LoadRoom(const char *jsonFile, Room *room, Item *items,
               int maxInvisiblePersons);
 void LoadInventory(const char *jsonFile, Inventory *inventory, Item *items,
                    Item *invisibleItems, int maxItems, int maxInvisibleItems);
+bool AddItem(Item *items, int *itemCount, int maxItems, const Item *newItem);
+
+bool AddPerson(Person *persons, int *personCount, int maxPersons,
+               const Person *newPerson);
+
+void RemoveItem(Item *items, int *itemCount, int index);
+
+void RemovePerson(Person *persons, int *personCount, int index);
 
 #endif // ENTITIES_H

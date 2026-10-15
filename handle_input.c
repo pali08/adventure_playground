@@ -64,7 +64,7 @@ void HandlePersonClicks(const Person *persons, int personCount,
   }
 }
 
-void HandleInventoryItemClicks(const Item *items, int itemCount,
+void HandleInventoryItemClicks(Item *items, int itemCount,
                                const Inventory *inventory,
                                Vector2 virtualMouse) {
   if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || !inventory)
@@ -132,6 +132,7 @@ void HandleInventoryItemClicks(const Item *items, int itemCount,
         uint8_t alpha = pixels[(py * img.width + px) * 4 + 3];
         if (alpha > 128) {
           TraceLog(LOG_INFO, "click on inventory item %d: %s", i, items[i].name);
+          RemoveItem(items, &itemCount, i);
         }
       }
     }
