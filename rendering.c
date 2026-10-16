@@ -119,8 +119,8 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
     int col = i % inventory->columns;
     int cellX = offsetX + col * cellSize;
     int cellY = offsetY + row * cellSize;
-    Vector2 cellCenter = {(float)(cellX + cellSize / 2),
-                          (float)(cellY + cellSize / 2)};
+    Vector2 cellCenter = {(float)(cellX + cellSize / 2.0),
+                          (float)(cellY + cellSize / 2.0)};
 
     Rectangle destRect;
     GetItemDrawRect(anim, maxDrawSize, cellCenter, &destRect);
