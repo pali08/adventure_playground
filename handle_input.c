@@ -138,8 +138,7 @@ void HandleInventoryItemClicks(Item *items, int *itemCount,
         if (alpha > 128) {
           if (*currentItem->name == 0 &&
               IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            *currentItem = items[i];
-            RemoveItem(items, itemCount, i);
+            TakeItemFromInventory(items, itemCount, i, currentItem);
           }
         }
       }
@@ -150,10 +149,7 @@ void HandleInventoryItemClicks(Item *items, int *itemCount,
 void HandleOtherClicks(Item *inventoryItems, int *inventoryItemCount,
                        Item *currentItem) {
   if (*currentItem->name != 0 && IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
-    bool itemAdded = AddItem(inventoryItems, inventoryItemCount,
-                             MAX_INVENTORY_ITEMS, currentItem);
-    TraceLog(LOG_INFO, "item was added: %s", itemAdded ? "true" : "false");
-
-    *currentItem = (Item){0};
+    ReturnItemToInventory(inventoryItems, inventoryItemCount,
+                          MAX_INVENTORY_ITEMS, currentItem);
   }
 }

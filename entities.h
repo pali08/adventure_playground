@@ -92,5 +92,9 @@ bool AddPerson(Person *persons, int *personCount, int maxPersons,
 void RemoveItem(Item *items, int *itemCount, int index);
 
 void RemovePerson(Person *persons, int *personCount, int index);
+void TakeItemFromInventory(Item *items, int *itemCount, int index,
+                           Item *outItem);
+void ReturnItemToInventory(Item *items, int *itemCount, int maxItems,
+                           Item *currentItem);
 
 #endif // ENTITIES_H

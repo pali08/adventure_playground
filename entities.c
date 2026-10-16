@@ -128,3 +128,15 @@ void RemovePerson(Person *persons, int *personCount, int index) {
   persons[*personCount - 1] = (Person){0};
   (*personCount)--;
 }
+
+void TakeItemFromInventory(Item *items, int *itemCount, int index,
+                           Item *currentItem) {
+  *currentItem = items[index];
+  RemoveItem(items, itemCount, index);
+}
+
+void ReturnItemToInventory(Item *items, int *itemCount, int maxItems,
+                           Item *currentItem) {
+  AddItem(items, itemCount, maxItems, currentItem);
+  *currentItem = (Item){0};
+}
