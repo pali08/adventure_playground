@@ -22,6 +22,7 @@ int main(void) {
   Item inventoryItems[MAX_INVENTORY_ITEMS];
   Room room = {0};
   Inventory inventory = {0};
+  Item currentItem = {0};
 
   LoadRoom(ASSETS_ROOMS_DIR "/descriptions_nadr.json", &room, items,
            room.invisibleItems, MAX_ITEMS, MAX_ITEMS, persons,
@@ -71,8 +72,9 @@ int main(void) {
     // Click handling — no indices passed
     HandleItemClicks(items, room.itemCount, virtualMouse);
     HandlePersonClicks(persons, room.personCount, virtualMouse);
-    HandleInventoryItemClicks(inventoryItems, inventory.itemCount, &inventory,
-                              virtualMouse);
+    HandleInventoryItemClicks(inventoryItems, &inventory.itemCount, &inventory,
+                              virtualMouse, &currentItem);
+    HandleOtherClicks(inventoryItems, &inventory.itemCount, &currentItem);
 
     PresentToScreen(target, scale, GAME_WIDTH, GAME_HEIGHT);
   }

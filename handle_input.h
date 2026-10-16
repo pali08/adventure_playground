@@ -3,13 +3,14 @@
 
 #include "entities.h"
 
-
 // Click handling
 void HandleItemClicks(const Item *items, int itemCount, Vector2 virtualMouse);
 void HandlePersonClicks(const Person *persons, int personCount,
                         Vector2 virtualMouse);
-void HandleInventoryItemClicks(const Item *items, int itemCount,
-                               const Inventory *inventory,
-                               Vector2 virtualMouse);
+void HandleInventoryItemClicks(const Item *items, int *itemCount,
+                               const Inventory *inventory, Vector2 virtualMouse,
+                               Item *currentItem);
+void HandleOtherClicks(Item *inventoryItems, int *inventoryItemCount,
+                       Item *currentItem);
 
 #endif // RENDERING_H

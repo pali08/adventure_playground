@@ -1,5 +1,7 @@
 #include "animation.h"
+#include "constants.h"
 #include "entities.h"
+#include "raylib.h"
 #include <math.h>
 #include <stdint.h>
 
@@ -12,7 +14,7 @@ void HandleItemClicks(const Item *items, int itemCount, Vector2 virtualMouse) {
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = anim->animIndex;  // ← use stored index
+    int idx = anim->animIndex; // ← use stored index
 
     Vector2 size = anim->frames.animSizes[idx];
     if (virtualMouse.x >= anim->position.x &&
@@ -43,7 +45,7 @@ void HandlePersonClicks(const Person *persons, int personCount,
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = anim->animIndex;  // ← use stored index
+    int idx = anim->animIndex; // ← use stored index
 
     Vector2 size = anim->frames.animSizes[idx];
     if (virtualMouse.x >= anim->position.x &&
@@ -64,10 +66,12 @@ void HandlePersonClicks(const Person *persons, int personCount,
   }
 }
 
-void HandleInventoryItemClicks(Item *items, int itemCount,
-                               const Inventory *inventory,
-                               Vector2 virtualMouse) {
-  if (!IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || !inventory)
+void HandleInventoryItemClicks(Item *items, int *itemCount,
+                               const Inventory *inventory, Vector2 virtualMouse,
+                               Item *currentItem) {
+  if (!(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) ||
+        IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) ||
+      !inventory)
     return;
 
   // ... [same grid setup code] ...
@@ -79,14 +83,15 @@ void HandleInventoryItemClicks(Item *items, int itemCount,
   int offsetX = (GetScreenWidth() - inventoryWidth) / 2;
   int offsetY = INVENTORY_GRID_TOP_OFFSET;
 
-  const int maxDrawSize = cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
+  const int maxDrawSize =
+      cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
 
-  for (int i = 0; i < itemCount; i++) {
+  for (int i = 0; i < *itemCount; i++) {
     const Animation *anim = &items[i].anim;
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = anim->animIndex;  // ← use stored index
+    int idx = anim->animIndex; // ← use stored index
     if (idx < 0 || idx >= anim->frames.animFrameCount)
       continue;
 
@@ -131,10 +136,24 @@ void HandleInventoryItemClicks(Item *items, int itemCount,
         uint8_t *pixels = (uint8_t *)img.data;
         uint8_t alpha = pixels[(py * img.width + px) * 4 + 3];
         if (alpha > 128) {
-          TraceLog(LOG_INFO, "click on inventory item %d: %s", i, items[i].name);
-          RemoveItem(items, &itemCount, i);
+          if (*currentItem->name == 0 &&
+              IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+            *currentItem = items[i];
+            RemoveItem(items, itemCount, i);
+          }
         }
       }
     }
+  }
+}
+
+void HandleOtherClicks(Item *inventoryItems, int *inventoryItemCount,
+                       Item *currentItem) {
+  if (*currentItem->name != 0 && IsMouseButtonPressed(MOUSE_RIGHT_BUTTON)) {
+    bool itemAdded = AddItem(inventoryItems, inventoryItemCount,
+                             MAX_INVENTORY_ITEMS, currentItem);
+    TraceLog(LOG_INFO, "item was added: %s", itemAdded ? "true" : "false");
+
+    *currentItem = (Item){0};
   }
 }
