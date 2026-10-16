@@ -3,10 +3,6 @@
 #include <math.h>
 #include <stdint.h>
 
-// ... existing includes ...
-
-// ... existing code ...
-
 void DrawItemsToRenderTexture(RenderTexture2D target, const Item *items,
                               int itemCount) {
   BeginTextureMode(target);
@@ -16,8 +12,9 @@ void DrawItemsToRenderTexture(RenderTexture2D target, const Item *items,
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    DrawTexture(anim->frames.animTextures[anim->animIndex],  // ← use anim->animIndex
-                (int)anim->position.x, (int)anim->position.y, WHITE);
+    DrawTexture(
+        anim->frames.animTextures[anim->animIndex], // ← use anim->animIndex
+        (int)anim->position.x, (int)anim->position.y, WHITE);
   }
 
   EndTextureMode();
@@ -33,11 +30,46 @@ void DrawPersonsToRenderTexture(RenderTexture2D target, const Person *persons,
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    DrawTexture(anim->frames.animTextures[anim->animIndex],  // ← use anim->animIndex
-                (int)anim->position.x, (int)anim->position.y, WHITE);
+    DrawTexture(
+        anim->frames.animTextures[anim->animIndex], // ← use anim->animIndex
+        (int)anim->position.x, (int)anim->position.y, WHITE);
   }
 
   EndTextureMode();
+}
+
+static void GetItemDrawRect(const Animation *anim, int maxDrawSize,
+                            Vector2 center, Rectangle *destRect) {
+  if (!anim || !destRect || anim->frames.animFrameCount == 0) {
+    if (destRect) {
+      *destRect = (Rectangle){0, 0, 0, 0};
+    }
+    return;
+  }
+
+  int idx = anim->animIndex;
+  if (idx < 0 || idx >= anim->frames.animFrameCount) {
+    *destRect = (Rectangle){0, 0, 0, 0};
+    return;
+  }
+
+  float w = (float)anim->frames.animSizes[idx].x;
+  float h = (float)anim->frames.animSizes[idx].y;
+
+  float scale = 1.0f;
+  if (w > maxDrawSize || h > maxDrawSize) {
+    float scaleX = (float)maxDrawSize / w;
+    float scaleY = (float)maxDrawSize / h;
+    scale = fminf(scaleX, scaleY);
+  }
+
+  int drawW = (int)(w * scale);
+  int drawH = (int)(h * scale);
+
+  destRect->x = center.x - drawW / 2.0f;
+  destRect->y = center.y - drawH / 2.0f;
+  destRect->width = drawW;
+  destRect->height = drawH;
 }
 
 void DrawInventoryToRenderTexture(RenderTexture2D target,
@@ -54,7 +86,8 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
   int offsetX = (GetScreenWidth() - inventoryWidth) / 2;
   int offsetY = INVENTORY_GRID_TOP_OFFSET;
 
-  const int maxDrawSize = cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
+  const int maxDrawSize =
+      cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
 
   BeginTextureMode(target);
 
@@ -76,43 +109,62 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
     if (!anim->active || anim->frames.animFrameCount == 0)
       continue;
 
-    int idx = anim->animIndex;  // ← use anim->animIndex
+    int idx = anim->animIndex;
     if (idx < 0 || idx >= anim->frames.animFrameCount)
       continue;
 
     Texture2D frame = anim->frames.animTextures[idx];
-    float w = (float)anim->frames.animSizes[idx].x;
-    float h = (float)anim->frames.animSizes[idx].y;
-
-    float scale = 1.0f;
-    if (w > maxDrawSize || h > maxDrawSize) {
-      float scaleX = (float)maxDrawSize / w;
-      float scaleY = (float)maxDrawSize / h;
-      scale = fminf(scaleX, scaleY);
-    }
-
-    int drawW = (int)(w * scale);
-    int drawH = (int)(h * scale);
 
     int row = i / inventory->columns;
     int col = i % inventory->columns;
-
     int cellX = offsetX + col * cellSize;
     int cellY = offsetY + row * cellSize;
-    int cellCenterX = cellX + (cellSize - drawW) / 2;
-    int cellCenterY = cellY + (cellSize - drawH) / 2;
+    Vector2 cellCenter = {(float)(cellX + cellSize / 2),
+                          (float)(cellY + cellSize / 2)};
+
+    Rectangle destRect;
+    GetItemDrawRect(anim, maxDrawSize, cellCenter, &destRect);
 
     Rectangle sourceRect = {.x = 0,
                             .y = 0,
                             .width = (float)frame.width,
                             .height = (float)frame.height};
 
-    Rectangle destRect = {
-        .x = cellCenterX, .y = cellCenterY, .width = drawW, .height = drawH};
-
     DrawTexturePro(frame, sourceRect, destRect, (Vector2){0, 0}, 0, WHITE);
   }
+  EndTextureMode();
+}
 
+void DrawCurrentItemToRenderTexture(RenderTexture2D target,
+                                    const Item *currentItem,
+                                    Vector2 mousePosition) {
+  if (!currentItem || !currentItem->anim.active ||
+      currentItem->anim.frames.animFrameCount == 0)
+    return;
+
+  const Animation *anim = &currentItem->anim;
+
+  int cellSize = GetScreenHeight() / 10;
+  int maxDrawSize =
+      cellSize - INVENTORY_GRID_THICKNESS - INVENTORY_GRID_ITEM_PADDING;
+
+  Vector2 center = mousePosition;
+  Rectangle destRect;
+  GetItemDrawRect(anim, maxDrawSize, center, &destRect);
+
+  int idx = anim->animIndex;
+  if (idx < 0 || idx >= anim->frames.animFrameCount)
+    return;
+
+  Texture2D frame = anim->frames.animTextures[idx];
+
+  Rectangle sourceRect = {.x = 0,
+                          .y = 0,
+                          .width = (float)frame.width,
+                          .height = (float)frame.height};
+
+  BeginTextureMode(target);
+  DrawTexturePro(frame, sourceRect, destRect, (Vector2){0, 0}, 0, WHITE);
   EndTextureMode();
 }
 

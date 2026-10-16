@@ -16,8 +16,12 @@ void DrawInventoryToRenderTexture(RenderTexture2D target,
                                   const Inventory *inventory, const Item *items,
                                   int itemCount);
 
-// Present
-void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
-                     int gameHeight);
+void DrawCurrentItemToRenderTexture(RenderTexture2D target,
+                                    const Item *currentItem,
+                                    Vector2 mousePosition);
+
+    // Present
+    void PresentToScreen(RenderTexture2D target, float scale, int gameWidth,
+                         int gameHeight);
 
 #endif // RENDERING_H

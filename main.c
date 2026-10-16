@@ -68,6 +68,7 @@ int main(void) {
     DrawPersonsToRenderTexture(target, persons, room.personCount); // no indices
     DrawInventoryToRenderTexture(target, &inventory, inventoryItems,
                                  inventory.itemCount); // no indices
+    DrawCurrentItemToRenderTexture(target, &currentItem, virtualMouse);
 
     // Click handling — no indices passed
     HandleItemClicks(items, room.itemCount, virtualMouse);
